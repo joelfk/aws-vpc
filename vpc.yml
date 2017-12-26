@@ -7,7 +7,7 @@ Resources:
       Tags:
       - Key: Name
         Value: default-vpc
-  PublicSubnetA:
+  SubnetA:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref Vpc
@@ -15,8 +15,8 @@ Resources:
       AvailabilityZone: "ap-southeast-2a"
       Tags:
       - Key: Name
-        Value: default-public-a
-  PublicSubnetB:
+        Value: default-subnet-a
+  SubnetB:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref Vpc
@@ -24,8 +24,8 @@ Resources:
       AvailabilityZone: "ap-southeast-2b"
       Tags:
       - Key: Name
-        Value: default-public-b
-  PublicSubnetC:
+        Value: default-subnet-b
+  SubnetC:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref Vpc
@@ -33,34 +33,7 @@ Resources:
       AvailabilityZone: "ap-southeast-2c"
       Tags:
       - Key: Name
-        Value: default-public-c
-  PrivateSubnetA:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref Vpc
-      CidrBlock: 10.0.3.0/24
-      AvailabilityZone: "ap-southeast-2a"
-      Tags:
-      - Key: Name
-        Value: default-private-a
-  PrivateSubnetB:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref Vpc
-      CidrBlock: 10.0.4.0/24
-      AvailabilityZone: "ap-southeast-2b"
-      Tags:
-      - Key: Name
-        Value: default-private-b
-  PrivateSubnetC:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref Vpc
-      CidrBlock: 10.0.5.0/24
-      AvailabilityZone: "ap-southeast-2c"
-      Tags:
-      - Key: Name
-        Value: default-private-c
+        Value: default-subnet-c
   InternetGateway:
     Type: "AWS::EC2::InternetGateway"
     Properties:
@@ -72,45 +45,6 @@ Resources:
     Properties:
       VpcId: !Ref Vpc
       InternetGatewayId: !Ref InternetGateway
-  ElasticIpAllocationA:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  ElasticIpAllocationB:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  ElasticIpAllocationC:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  NatGatewayA:
-    DependsOn: InternetGatewayAttachment
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt ElasticIpAllocationA.AllocationId
-      SubnetId: !Ref PublicSubnetA
-      Tags:
-      - Key: Name
-        Value: default-nat-a
-  NatGatewayB:
-    DependsOn: InternetGatewayAttachment
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt ElasticIpAllocationB.AllocationId
-      SubnetId: !Ref PublicSubnetB
-      Tags:
-      - Key: Name
-        Value: default-nat-b
-  NatGatewayC:
-    DependsOn: InternetGatewayAttachment
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt ElasticIpAllocationC.AllocationId
-      SubnetId: !Ref PublicSubnetC
-      Tags:
-      - Key: Name
-        Value: default-nat-c
   PublicSubnetRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -128,69 +62,15 @@ Resources:
   PublicSubnetARouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnetA
+      SubnetId: !Ref SubnetA
       RouteTableId: !Ref PublicSubnetRouteTable
   PublicSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnetB
+      SubnetId: !Ref SubnetB
       RouteTableId: !Ref PublicSubnetRouteTable
   PublicSubnetCRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnetC
+      SubnetId: !Ref SubnetC
       RouteTableId: !Ref PublicSubnetRouteTable
-  PrivateSubnetARouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-      Tags:
-      - Key: Name
-        Value: default-private-a-rtb
-  PrivateSubnetANatRoute:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateSubnetARouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGatewayA
-  PrivateSubnetARouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PrivateSubnetA
-      RouteTableId: !Ref PrivateSubnetARouteTable
-  PrivateSubnetBRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-      Tags:
-      - Key: Name
-        Value: default-private-b-rtb
-  PrivateSubnetBNatRoute:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateSubnetBRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGatewayB
-  PrivateSubnetBRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PrivateSubnetB
-      RouteTableId: !Ref PrivateSubnetBRouteTable
-  PrivateSubnetCRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-      Tags:
-      - Key: Name
-        Value: default-private-c-rtb
-  PrivateSubnetCNatRoute:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateSubnetCRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGatewayC
-  PrivateSubnetCRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PrivateSubnetC
-      RouteTableId: !Ref PrivateSubnetCRouteTable
