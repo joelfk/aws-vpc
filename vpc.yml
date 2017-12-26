@@ -67,6 +67,11 @@ Resources:
       Tags:
       - Key: Name
         Value: default-igw
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
   ElasticIpAllocationA:
     Type: AWS::EC2::EIP
     Properties:
@@ -80,7 +85,7 @@ Resources:
     Properties:
       Domain: vpc
   NatGatewayA:
-    DependsOn: VPCGatewayAttach
+    DependsOn: InternetGatewayAttachment
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt ElasticIpAllocationA.AllocationId
@@ -89,7 +94,7 @@ Resources:
       - Key: Name
         Value: default-nat-a
   NatGatewayB:
-    DependsOn: VPCGatewayAttach
+    DependsOn: InternetGatewayAttachment
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt ElasticIpAllocationB.AllocationId
@@ -98,7 +103,7 @@ Resources:
       - Key: Name
         Value: default-nat-b
   NatGatewayC:
-    DependsOn: VPCGatewayAttach
+    DependsOn: InternetGatewayAttachment
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt ElasticIpAllocationC.AllocationId
@@ -117,7 +122,7 @@ Resources:
     Type: AWS::EC2::Route
     DependsOn: InternetGateway
     Properties:
-      RouteTableId: !Ref PrivateSubnetRouteTable
+      RouteTableId: !Ref PublicSubnetRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
   PublicSubnetARouteTableAssociation:
