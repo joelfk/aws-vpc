@@ -13,6 +13,7 @@ Resources:
       VpcId: !Ref Vpc
       CidrBlock: 10.0.0.0/24
       AvailabilityZone: "ap-southeast-2a"
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: default-subnet-a
@@ -22,6 +23,7 @@ Resources:
       VpcId: !Ref Vpc
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: "ap-southeast-2b"
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: default-subnet-b
@@ -31,6 +33,7 @@ Resources:
       VpcId: !Ref Vpc
       CidrBlock: 10.0.2.0/24
       AvailabilityZone: "ap-southeast-2c"
+      MapPublicIpOnLaunch: true
       Tags:
       - Key: Name
         Value: default-subnet-c
